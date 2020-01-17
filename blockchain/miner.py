@@ -24,12 +24,22 @@ def proof_of_work(last_proof):
 
     print("Searching for next proof")
     proof = 420000000000000000000
+    lastattempted = proof
+    proofexhaustcounter = 0
     #  TODO: Your code here
     last_proof = str(last_proof)
     encoded_last = last_proof.encode()
     last_hash = hashlib.sha256(encoded_last).hexdigest()
     while valid_proof(last_hash, proof) is False:
-        proof += 1
+        if lastattempted == proof:
+            proof = proof * -1
+        elif proof < 0:
+            proof = (proof * -1) - 1
+        elif proof > 0:
+            proof = (proof * -1) + 1
+        else:
+            proofexhaustcounter += 1
+            proof = 420000000000000000000 * (1000 * 10 ** proofexhaustcounter)
 
     print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
